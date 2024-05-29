@@ -54,10 +54,10 @@ market.get_graph(complete=True)
 ``` python
 price = market.get_price()
 quantity = market.get_quantity()
-print(f"Price: {price}, Quantity: {quantity}")
+print(f"Price: {round(price)}, Quantity: {round(quantity)}")
 ```
 
-    Price: 2000/3, Quantity: 1000/3
+    Price: 667, Quantity: 333
 
 ``` python
 supply = "x"
