@@ -148,25 +148,21 @@ class Free_market:
             #value_pairs[x_val] = result """
             if end <= 1:
                 x_values = sorted([i for i in range(start, end, step)] + [quantity])
-                print(x_values)
+
                 for x_val in x_values:
                     result = float(equation_function(x_val))
                     value_pairs[x_val] = result
                 result = float(equation_function(quantity))
-                print(f"result from rational is {result}")
+
                 value_pairs[x_val] = result
 
 
             else:
                 x_values = sorted([i for i in range(start, end, step)] + [quantity])
-                print(x_values)
                 for x_val in x_values:
                     result = float(equation_function(x_val))
                     value_pairs[x_val] = result
                 
-                
-               # print(f"For x = {x_val}, the result is {result}")
-
         else:
             print("Error: Unable to create the equation function.")
         return value_pairs    
@@ -193,7 +189,6 @@ class Free_market:
         solutions = solve(equation, x)
         if solutions:
             zero_point = solutions[0]
-            #print(f"zero_points {zero_point}")
             return zero_point
         else:
             zero_point = self.get_price(self.supply, self.demand)
@@ -209,7 +204,7 @@ class Free_market:
         
         # Calculate the equilibrium price and quantity
         quantity = max(solve(Eq(supply_eq, demand_eq), x))
-        #print(quantity)
+
         return quantity
     
 
@@ -232,7 +227,6 @@ class Free_market:
         else:
             price = equation_function(quantity)
              
-        #print(f"price is around {round(price, 3)}")
         return price
 
 
@@ -285,6 +279,12 @@ class Free_market:
         return economic_surplus
     
 
+
+
+
+
+
+# %% ../nbs/00_core.ipynb 5
 class Monopoly(Free_market):
     def __init__(self, supply, demand) -> None:
         super().__init__(supply, demand)
@@ -339,41 +339,14 @@ class Monopoly(Free_market):
         plt.legend() 
         plt.show()
 
-
-if __name__ == "__main__":
-    
-    for i in range(0, 5):
-        a = random.randint(1,5)
-        b = random.randint(5,10)
-        c = random.randint(1,5)
-        d = random.randint(0,1)
-
-        supply_function = f"{d} + {c} * x"
-        demand_function = f"{b} - {a} * x"
-        market = Free_market(supply_function, demand_function)
-        
-
-        print(f"supply function {supply_function}\ndemand function {demand_function}")
-        market.get_graph(complete=True)
-
-    total_cost = "x"
-    demand = "10 - x"
-    market = Monopoly(supply=total_cost, demand=demand)
-    market.get_graph(complete=True, is_tot_cost=True)
-    print(f"""{market.get_price()}
-{market.get_quantity()}
-{market.get_consumer_surplus()}
-{market.get_producer_surplus()}
-{ market.get_economic_surplus()}""")
-
-# %% ../nbs/00_core.ipynb 5
+# %% ../nbs/00_core.ipynb 7
 supply_function = f"{1} + {1}*x"
 demand_function = f"{10} - {1}*x"
 market = Free_market(supply_function, demand_function)
 
 print(f"supply function {supply_function}\ndemand function {demand_function}")
 
-# %% ../nbs/00_core.ipynb 6
+# %% ../nbs/00_core.ipynb 8
 #from monopoly import Monopoly
 
 supply = "x"

@@ -32,8 +32,6 @@ class Monopoly(Free_market):
         marginal_cost, marginal_revenue =str(marginal_cost), str(marginal_revenue)
         supply, demand =str(self.supply), str(self.demand)
         
-        
-        
         price = self.get_price()
         quantity = self.get_quantity()
         end = self.get_zero_point(marginal_revenue)
@@ -70,11 +68,7 @@ if __name__ == "__main__":
     demand = "10 - x"
     market = Monopoly(supply=total_cost, demand=demand)
     market.get_graph(complete=True, is_tot_cost=True)
-    print(f"""{market.get_price()}
-{market.get_quantity()}
-{market.get_consumer_surplus()}
-{market.get_producer_surplus()}
-{ market.get_economic_surplus()}""")
+    print(f"""{market.get_price()}{market.get_quantity()}{market.get_consumer_surplus()}{market.get_producer_surplus()}{market.get_economic_surplus()}""")
         
 
 
