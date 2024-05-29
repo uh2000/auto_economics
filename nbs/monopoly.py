@@ -1,9 +1,13 @@
 import matplotlib.pyplot as plt
 from sympy import diff, symbols, parse_expr
 import sympy
-from free_market import Free_market
+
 import math
 import numpy as np
+try:
+    from auto_economics.nbs import free_market
+except ModuleNotFoundError:
+    from free_market import Free_market
 
 
 class Monopoly(Free_market):
