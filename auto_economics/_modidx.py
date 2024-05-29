@@ -29,4 +29,6 @@ d = { 'settings': { 'branch': 'main',
                                                                                          'auto_economics/core.py'),
                                      'auto_economics.core.Monopoly': ('core.html#monopoly', 'auto_economics/core.py'),
                                      'auto_economics.core.Monopoly.__init__': ('core.html#monopoly.__init__', 'auto_economics/core.py'),
-                                     'auto_economics.core.Monopoly.get_graph': ('core.html#monopoly.get_graph', 'auto_economics/core.py')}}}
+                                     'auto_economics.core.Monopoly.get_graph': ('core.html#monopoly.get_graph', 'auto_economics/core.py'),
+                                     'auto_economics.core.Monopoly.get_quantity': ( 'core.html#monopoly.get_quantity',
+                                                                                    'auto_economics/core.py')}}}
