@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "auto_economics"
+  site-url: "https://uh2000.github.io/auto_economics"
+  description: "Automated Economics"
+  repo-branch: 1
+  repo-url: "https://github.com/uh2000/auto_economics"
