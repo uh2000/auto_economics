@@ -339,14 +339,14 @@ class Monopoly(Free_market):
         plt.legend() 
         plt.show()
 
-# %% ../nbs/00_core.ipynb 7
+# %% ../nbs/00_core.ipynb 6
 supply_function = f"{1} + {1}*x"
 demand_function = f"{10} - {1}*x"
 market = Free_market(supply_function, demand_function)
 
 print(f"supply function {supply_function}\ndemand function {demand_function}")
 
-# %% ../nbs/00_core.ipynb 8
+# %% ../nbs/00_core.ipynb 7
 #from monopoly import Monopoly
 
 supply = "x"
