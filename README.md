@@ -15,15 +15,13 @@ Link: https://pypi.org/project/auto-economics/
 
 ## How to use
 
-Fill me in please! Don’t forget code examples:
-
 ``` python
 from auto_economics.core import Free_market, Monopoly
 ```
 
 ``` python
-supply_function = " 2*x"
-demand_function = "1000 -  x"
+supply_function = " x"
+demand_function = "10 -  x"
 market = Free_market(supply=supply_function, demand=demand_function)
 ```
 
@@ -39,9 +37,9 @@ economic_surplus = market.get_economic_surplus()
 print("Economic Surplus:", round(economic_surplus))
 ```
 
-    Consumer Surplus: 55556
-    Producer Surplus: 111111
-    Economic Surplus: 166667
+    Consumer Surplus: 12
+    Producer Surplus: 12
+    Economic Surplus: 25
 
 ``` python
 market.get_graph(complete=True)
@@ -57,14 +55,17 @@ quantity = market.get_quantity()
 print(f"Price: {round(price)}, Quantity: {round(quantity)}")
 ```
 
-    Price: 667, Quantity: 333
+    Price: 5, Quantity: 5
 
 ``` python
 supply = "x"
 demand = "10 - x"
 market = Monopoly(supply, demand)
 
-market.get_graph(complete=True, is_tot_cost = True)
+market.get_graph(complete=True)
+round(market.get_economic_surplus())
 ```
 
 ![](index_files/figure-commonmark/cell-7-output-1.png)
+
+$\displaystyle 22$

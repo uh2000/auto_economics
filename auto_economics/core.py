@@ -213,7 +213,7 @@ class Free_market:
     
 
     def get_price(self) -> float:
-        x, y = symbols('x y')
+        x = symbols('x')
         quantity = self.get_quantity()
         
         if "x" in self.demand:
@@ -292,20 +292,19 @@ class Free_market:
 class Monopoly(Free_market):
     def __init__(self, supply, demand) -> None:
         super().__init__(supply, demand)
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
             
-    def get_graph(self,complete = False, is_tot_cost = False) -> None:
+    def get_graph(self,complete = False) -> None:
         x = symbols('x')
-        income = parse_expr(self.demand) * x
+        income = parse_expr(f"({self.demand}) * x")
 
         
-        if is_tot_cost == True:
-            supply_parsed = parse_expr(self.supply)
-            marginal_cost = diff(supply_parsed, x)
-        else:
-            marginal_cost = self.supply
+        
+        marginal_cost = self.supply
         
         marginal_revenue = diff(income, x)
-        
         
         
         marginal_cost, marginal_revenue =str(marginal_cost), str(marginal_revenue)
@@ -315,27 +314,100 @@ class Monopoly(Free_market):
         
         price = self.get_price()
         quantity = self.get_quantity()
-        end = self.get_zero_point(marginal_revenue)
+        end = self.get_zero_point(self.demand)
 
         mc = self.get_calculate_values(marginal_cost, end)
         mr = self.get_calculate_values(marginal_revenue, end)
+        mr_graph = {}
+        for key in mr.keys():
+            if mr[key] >= 0:
+                mr_graph[key] = mr[key]
+              
 
         supply_dict = self.get_calculate_values(supply, end)
         demand_dict = self.get_calculate_values(demand, end)
 
         if complete == True:
-            plt.plot([i for i in range(0, round(quantity) + 1)], [price for i in range(0, round(quantity) + 1)],
-                     linestyle = "dashed", label = f"Price*: {price}")
-            plt.plot([quantity for i in range(0, round(price) + 1 )], [i for i in range(0,round(price) + 1)],
-                     linestyle = "dashed", label = f"Quantity*: {quantity}")
+            x_range = [i for i in range(0, math.floor(quantity))] + [float(quantity)]
+            if len(x_range) <= 1:
+                x_range = [i for i in range(0, math.ceil(quantity))] + [float(quantity)]
+
+            y_range = [i for i in range(0, math.floor(price))] + [float(price)]
+            if len(y_range) <= 1:
+                y_range = [i for i in range(0, math.ceil(price))] +[float(price)]
+
+
+            price_curve = np.array([price for i in range(len(x_range))], dtype=float) 
+            quantum_curve = np.array([quantity for i in range(len(y_range))], dtype=float) 
+
+            plt.plot(x_range,                              # x [i for i in range(len(price_curve))],
+                                            price_curve,                         # y
+                                            linestyle = "dashed", label = f"Price*: {price}")
+            
+            plt.plot(quantum_curve,                             # x 
+                                        y_range,                                   # y [i for i in range(len(quantum_curve))]
+                                        linestyle = "dashed", label = f"Quantity*: {quantity}")
+            
+            quantity_free_market = max(solve(Eq(parse_expr(self.supply), parse_expr(self.demand)), x))
+            equation_function = self.create_equation_function(self.demand)
+            if "x" not in self.supply:
+                price_free_market = float(self.supply)
+            elif "x" not in self.demand:
+                price_free_market = float(self.demand)
+            else:
+                price_free_market = equation_function(quantity)
+
+            """  mc_array = np.array(list(mc.values()))
+            mr_array = np.array(list(mr_graph.values()))
+            price_array = np.array([price for _ in range(len(mc))])
+            condition = mc_array <= price_array
+            # Fill area between price line and MC curve for Producer Surplus (P.S)
+
+            plt.fill_between(list(mc.keys()), mc_array, price_array, where=(mc_array<=price_array), interpolate=True, color='gray', alpha=0.5)
+            x_mid = np.quantile(x_range, 0.2)
+            y_mid = np.quantile([np.min(price_curve[condition]), np.max(mr_array[condition])], 0.2)
+            plt.text(x_mid, y_mid, "P.S", color='black', backgroundcolor='white')
+
+            condition = mr_array>=price_array
+            # Fill area between price line and MR curve for Consumer Surplus (C.S)
+            plt.fill_between(list(mr_graph.keys()), mr_array, price_array, where=(mr_array>=price_array), interpolate=True, color='gray', alpha=0.5)
+            
+            x_mid = np.quantile(x_range, 0.2)
+            y_mid = np.quantile([np.min(price_curve[condition]), np.max(mr_array[condition])], 0.2)
+            plt.text(x_mid, y_mid, "C.S", color='black', backgroundcolor='white')
+            """
+            """ if "x" in str(mc):
+                
+                price_curve = np.array([price_free_market for i in range(len(x_range))], dtype=float)
+                mc_curve = np.array(mc[0:len(price_curve) -1] + [float(price)])  
+
+                x_range = np.array(x_range)
+
+                # Create a valid boolean array for the 'where' condition
+                condition = mc_curve  <= price_curve
+                x_mid = np.quantile(x_range, 0.2)
+                y_mid = np.quantile([np.min(mc_curve[condition]), np.max(price_curve[condition])], 0.8)
+
+                plt.text(x_mid, y_mid, "P.S")
+
+            if "x" in str(mr):
+                price_curve = np.array([price_free_market for i in range(len(x_range))], dtype=float)
+                mr_curve = np.array(mr[0:len(price_curve)  - 1] + [float(price)])  
+                x_range = np.array(x_range)
+                condition = mr_curve >= price_curve
+                x_mid = np.quantile(x_range, 0.2)
+                y_mid = np.quantile([np.min(price_curve[condition]), np.max(mr_curve[condition])], 0.2)
+        
+                plt.text(x_mid, y_mid, "C.S") 
+            """
+            
+            
             
         plt.plot(mc.keys(),mc.values(), label = "Marginal Cost") 
-        plt.plot(mr.keys(),mr.values(), label = "Marginal Revenue") 
-
-        plt.plot(supply_dict.keys(), supply_dict.values(), label = "Supply")
-        plt.plot(demand_dict.keys(), demand_dict.values(), label = "Demand")
+        plt.plot(mr_graph.keys(),mr_graph.values(), label = "Marginal Revenue") 
 
         
+        plt.plot(demand_dict.keys(), demand_dict.values(), label = "Demand")
 
         plt.xlabel("Quantity")
         plt.ylabel("Price")
@@ -347,18 +419,40 @@ class Monopoly(Free_market):
         x = symbols('x')
         
         # Create the equation from the supply and demand functions
-        supply_eq = parse_expr(self.supply)
-        demand_eq = parse_expr(f"{self.demand}*x")
+        mc = parse_expr(self.supply)
+        revenue_eq = parse_expr(f"({self.demand})*(x)")
+        mr = diff(revenue_eq, x)
+
+
         
         # Calculate the equilibrium price and quantity
-        quantity = max(solve(Eq(supply_eq, demand_eq), x))
+        quantity = max(solve(Eq(mc, mr), x))
         #print(quantity)
         return quantity
+    
+    def get_price(self) -> float:
+        x = symbols('x')
+        quantity = self.get_quantity()
+        mc = parse_expr(self.supply)
+        revenue_eq = parse_expr(f"({self.demand})*(x)")
+        mr = diff(revenue_eq, x)
+        
+    
+        equation_function = self.create_equation_function(str(mr))
+        
+        
+        if "x" not in str(mc):
+            price = float(mc)
+        elif "x" not in str(mr):
+            price = float(mr)
+        else:
+            price = equation_function(quantity)
+             
+        #print(f"price is around {round(price, 3)}")
+        return price
 
 # %% ../nbs/00_core.ipynb 7
-#from monopoly import Monopoly
-
 supply = "x"
 demand = "10 -  x"
 market = Monopoly(supply, demand)
-market.get_graph(complete=True, is_tot_cost = True)
+market.get_graph(complete=True)
