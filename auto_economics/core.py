@@ -342,11 +342,11 @@ class Monopoly(Free_market):
 
             plt.plot(x_range,                              # x [i for i in range(len(price_curve))],
                                             price_curve,                         # y
-                                            linestyle = "dashed", label = f"Price*: {price}")
+                                            linestyle = "dashed", label = f"Price*: {round(price)}")
             
             plt.plot(quantum_curve,                             # x 
                                         y_range,                                   # y [i for i in range(len(quantum_curve))]
-                                        linestyle = "dashed", label = f"Quantity*: {quantity}")
+                                        linestyle = "dashed", label = f"Quantity*: {round(quantity)}")
             
             quantity_free_market = max(solve(Eq(parse_expr(self.supply), parse_expr(self.demand)), x))
             equation_function = self.create_equation_function(self.demand)
@@ -438,7 +438,7 @@ class Monopoly(Free_market):
         mr = diff(revenue_eq, x)
         
     
-        equation_function = self.create_equation_function(str(mr))
+        equation_function = self.create_equation_function(str(self.demand))
         
         
         if "x" not in str(mc):

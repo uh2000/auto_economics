@@ -63,9 +63,9 @@ demand = "10 - x"
 market = Monopoly(supply, demand)
 
 market.get_graph(complete=True)
-round(market.get_economic_surplus())
+print(f"Economic surplus in monopoly: {round(market.get_economic_surplus())}")
 ```
 
 ![](index_files/figure-commonmark/cell-7-output-1.png)
 
-$\displaystyle 22$
+    Economic surplus in monopoly: 22
