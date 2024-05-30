@@ -19,8 +19,6 @@ Link: https://pypi.org/project/auto-economics/
 from auto_economics.core import Free_market, Monopoly
 ```
 
-![](index_files/figure-commonmark/cell-2-output-1.png)
-
 ``` python
 supply_function = " x"
 demand_function = "10 -  x"
