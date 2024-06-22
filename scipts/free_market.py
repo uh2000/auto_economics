@@ -282,7 +282,7 @@ class Free_market:
     
 if __name__ == "__main__":
     
-        for i in range(0, 5):
+        for i in range(0, 1):
             a = random.randint(1,5)
             b = random.randint(5,10)
             c = random.randint(1,5)

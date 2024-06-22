@@ -16,56 +16,77 @@ Link: https://pypi.org/project/auto-economics/
 ## How to use
 
 ``` python
-from auto_economics.core import Free_market, Monopoly
+supply_function = f"{0} + {1} * x"
+demand_function = f"{10} - {1} * x"
+free_market = Free_market(supply_function, demand_function)
+
+
+print(f"supply function {supply_function}\ndemand function {demand_function}")
+free_market.get_graph(complete=True)
 ```
 
-``` python
-supply_function = " x"
-demand_function = "10 -  x"
-market = Free_market(supply=supply_function, demand=demand_function)
-```
-
-``` python
-consumer_surplus = market.get_consumer_surplus()
-print("Consumer Surplus:", round(consumer_surplus))
-
-producer_surplus = market.get_producer_surplus()
-print("Producer Surplus:", round(producer_surplus))
-
-economic_surplus = market.get_economic_surplus()
-
-print("Economic Surplus:", round(economic_surplus))
-```
-
-    Consumer Surplus: 12
-    Producer Surplus: 12
-    Economic Surplus: 25
-
-``` python
-market.get_graph(complete=True)
-```
-
+    supply function 0 + 1 * x
+    demand function 10 - 1 * x
     cannot multiply variables with zero
 
-![](index_files/figure-commonmark/cell-5-output-2.png)
-
-``` python
-price = market.get_price()
-quantity = market.get_quantity()
-print(f"Price: {round(price)}, Quantity: {round(quantity)}")
-```
-
-    Price: 5, Quantity: 5
+![](index_files/figure-commonmark/cell-2-output-2.png)
 
 ``` python
 supply = "x"
-demand = "10 - x"
-market = Monopoly(supply, demand)
-
-market.get_graph(complete=True)
-print(f"Economic surplus in monopoly: {round(market.get_economic_surplus())}")
+demand = "10 -  x"
+monopoly = Monopoly(supply, demand)
+monopoly.get_graph(complete=True)
 ```
 
-![](index_files/figure-commonmark/cell-7-output-1.png)
+    {0: 10.0, 1: 9.0, 2: 8.0, 3: 7.0, 4: 6.0, 5: 5.0, 6: 4.0, 7: 3.0, 8: 2.0, 9: 1.0, 10: 0.0} [3.3333333333333335, 4, 5]
+    dead_loss_x_range is: [3.3333333333333335, 4, 5]
+    demand_array is: [7. 6. 5.]
+    mc_array is: [3. 4. 5.], price_free_market is: 5
 
-    Economic surplus in monopoly: 22
+![](index_files/figure-commonmark/cell-3-output-2.png)
+
+``` python
+consumer_surplus_free_market = free_market.get_consumer_surplus()
+consumer_surplus_monopoly = monopoly.get_consumer_surplus()
+
+print(f"Consumer Surplus free market:  {round(consumer_surplus_free_market)}\n"
+    +f"Consumer Surplus monopoly: {round(consumer_surplus_monopoly)}")
+
+producer_surplus_free_market = free_market.get_producer_surplus()
+producer_surplus_monopoly = monopoly.get_producer_surplus()
+
+print(f"Producer Surplus free market: {round(producer_surplus_free_market)}\n"
+    +f"Producer Surplus monopoly: {round(producer_surplus_monopoly)}")
+
+economic_surplus_free_market = free_market.get_economic_surplus()
+economic_surplus_monopoly = monopoly.get_economic_surplus()
+
+print(f"Economic Surplus free market: {round(economic_surplus_free_market)}\n"
+    +f"Economic Surplus monopoly: {round(economic_surplus_monopoly)}")
+```
+
+    Consumer Surplus free market:  12
+    Consumer Surplus monopoly: 6
+    Producer Surplus free market: 12
+    Producer Surplus monopoly: 17
+    Economic Surplus free market: 25
+    Economic Surplus monopoly: 22
+
+``` python
+price_free_market = free_market.get_price()
+price_monopoly = monopoly.get_price()
+
+print(f"Price free market: {round(price_free_market)}\n"
+      +f"Price monopoly: {round(price_monopoly)}")
+
+quantity_free_market = free_market.get_quantity()
+quantity_monopoly = monopoly.get_quantity()
+
+print(f"Quantity free market: {round(quantity_free_market)}\n"
+        +f"Quantity monopoly: {round(quantity_monopoly)}")
+```
+
+    Price free market: 5
+    Price monopoly: 7
+    Quantity free market: 5
+    Quantity monopoly: 3
