@@ -98,7 +98,7 @@ class Free_market:
                 # Create a valid boolean array for the 'where' condition
                 condition = supply_curve[0:len(price_curve)]  <= price_curve
 
-                demand_surplus_plot = plt.fill_between(x_range, supply_curve, price_curve, where = condition, color = "silver", alpha=0.9) # producer surplus
+                producer_surplus_plot = plt.fill_between(x_range, supply_curve, price_curve, where = condition, color = "silver", alpha=0.9) # producer surplus
 
                 x_mid = np.quantile(x_range, 0.2)
                 y_mid = np.quantile([np.min(supply_curve[condition]), np.max(price_curve[condition])], 0.8)

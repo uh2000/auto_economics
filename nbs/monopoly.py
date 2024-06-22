@@ -48,32 +48,42 @@ class Monopoly(Free_market):
             quantum_curve = np.array([quantity for i in range(len(y_range))], dtype=float) 
 
             plt.plot(x_range, price_curve, linestyle = "dashed", label = f"Price*: {round(price,2)}")
-            
             plt.plot(quantum_curve,y_range, linestyle = "dashed", label = f"Quantity*: {round(quantity,2)}")
             
-            #quantity_free_market = max(solve(Eq(parse_expr(self.supply), parse_expr(self.demand)), x))
-            #equation_function = self.create_equation_function(self.demand)
-            #if "x" not in self.supply:
-            #    price_free_market = float(self.supply)
-            #elif "x" not in self.demand:
-            #    price_free_market = float(self.demand)
-            #else:
-            #   price_free_market = equation_function(quantity)
-
+           
+            # Producer surplus code
             mc_values = [mc[str(x)] if str(x) in mc else mc[round(x)] for x in x_range]  # Ensure mc values are aligned with x_range
             mc_array = np.array(mc_values, dtype=float)
             condition = mc_array  <= list(price_curve)
             producer_surplus_plot = plt.fill_between(x_range, mc_array, price_curve, where = condition, color = "silver", alpha=0.9) # producer surplus
+            x_mid = np.quantile(x_range, 0.2)
+            y_mid = np.quantile([np.min(mc_array[condition]), np.max(price_curve)], 0.8)
+            plt.text(x_mid, y_mid, "P.S")
 
-            
+
+            # Consumer surplus code
             demand_array = np.array(list(demand_dict.values())[0:len(price_curve)], dtype=float)
-            print(demand_array)
             condition = demand_array >= list(price_curve)
             consumer_surplus_plot = plt.fill_between(x_range, demand_array, price_curve, where = condition, color = "purple", alpha=0.9) # consumer surplus
+            x_mid = np.quantile(x_range, 0.2)
+            y_mid = np.quantile([np.min(price_curve), np.min(demand_array[condition])], 0.8)
+            plt.text(x_mid, y_mid, "C.S")
+
+            # Dead weight loss code
+            start_dwl = round(quantity) + 1
+            price_free_market = solve(f"{self.demand}-{self.supply}", x)[0]
+            dead_loss_x_range = [float(quantity)] + [i for i in range(start_dwl, round(price_free_market)+1)]
+            mc_array = np.array([mc[str(x)] if str(x) in mc else mc[round(x)] for x in dead_loss_x_range], dtype=float)
+            print(demand_dict, dead_loss_x_range)
+            demand_array = np.array([demand_dict[round(i)] for i in dead_loss_x_range], dtype=float)
+            condition = demand_array >= mc_array
+            print(f"dead_loss_x_range is: {dead_loss_x_range}\ndemand_array is: {demand_array}\nmc_array is: {mc_array}, price_free_market is: {price_free_market}")
+            dead_loss_plot = plt.fill_between(dead_loss_x_range, demand_array, mc_array, where = condition, color = "red", alpha=0.9) # dead loss
+            x_mid = np.quantile(dead_loss_x_range, 0.2)
+            y_mid = np.quantile(price_free_market, 1)
+            plt.text(x_mid, y_mid, "DWL")
 
 
-
-            
         plt.plot(mc.keys(),mc.values(), label = "Marginal Cost") 
         plt.plot(mr_graph.keys(),mr_graph.values(), label = "Marginal Revenue") 
 
@@ -127,7 +137,7 @@ if __name__ == "__main__":
     total_cost = "x"
     demand = "10 - x"
     market = Monopoly(supply=total_cost, demand=demand)
-    market.get_graph(complete=True, is_tot_cost=True)
+    market.get_graph(complete=True)
     print(f"""{market.get_price()}{market.get_quantity()}{market.get_consumer_surplus()}{market.get_producer_surplus()}{market.get_economic_surplus()}""")
         
 
