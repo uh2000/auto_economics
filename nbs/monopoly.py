@@ -1,68 +1,128 @@
 import matplotlib.pyplot as plt
-from sympy import diff, symbols, parse_expr
+from sympy import diff, symbols, parse_expr, solve
 import sympy
-
 import math
 import numpy as np
-try:
-    from auto_economics.nbs import free_market
-except ModuleNotFoundError:
-    from free_market import Free_market
+from free_market import *
 
 
 class Monopoly(Free_market):
     def __init__(self, supply, demand) -> None:
         super().__init__(supply, demand)
-            
-    def get_graph(self,complete = False, is_tot_cost = False) -> None:
-        x = symbols('x')
-        income = parse_expr(self.demand) * x
 
-        
-        if is_tot_cost == True:
-            supply_parsed = parse_expr(self.supply)
-            marginal_cost = diff(supply_parsed, x)
-        else:
-            marginal_cost = self.supply
-        
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+            
+    def get_graph(self,complete = False) -> None:
+        x = symbols('x')
+        income = parse_expr(f"({self.demand}) * x")
+        marginal_cost = self.supply
         marginal_revenue = diff(income, x)
-        
-        
-        
         marginal_cost, marginal_revenue =str(marginal_cost), str(marginal_revenue)
         supply, demand =str(self.supply), str(self.demand)
-        
         price = self.get_price()
         quantity = self.get_quantity()
-        end = self.get_zero_point(marginal_revenue)
-
+        end = self.get_zero_point(self.demand)
         mc = self.get_calculate_values(marginal_cost, end)
         mr = self.get_calculate_values(marginal_revenue, end)
+        mr_graph = {}
+        for key in mr.keys():
+            if mr[key] >= 0:
+                mr_graph[key] = mr[key]
+              
 
         supply_dict = self.get_calculate_values(supply, end)
         demand_dict = self.get_calculate_values(demand, end)
 
         if complete == True:
-            plt.plot([i for i in range(0, round(quantity) + 1)], [price for i in range(0, round(quantity) + 1)],
-                     linestyle = "dashed", label = f"Price*: {price}")
-            plt.plot([quantity for i in range(0, round(price) + 1 )], [i for i in range(0,round(price) + 1)],
-                     linestyle = "dashed", label = f"Quantity*: {quantity}")
+            x_range = [i for i in range(0, math.floor(quantity))] + [float(quantity)]
+            if len(x_range) <= 1:
+                x_range = [i for i in range(0, math.ceil(quantity))] + [float(quantity)]
+
+            y_range = [i for i in range(0, math.floor(price))] + [float(price)]
+            if len(y_range) <= 1:
+                y_range = [i for i in range(0, math.ceil(price))] +[float(price)]
+
+
+            price_curve = np.array([price for i in range(len(x_range))], dtype=float) 
+            quantum_curve = np.array([quantity for i in range(len(y_range))], dtype=float) 
+
+            plt.plot(x_range, price_curve, linestyle = "dashed", label = f"Price*: {round(price,2)}")
+            
+            plt.plot(quantum_curve,y_range, linestyle = "dashed", label = f"Quantity*: {round(quantity,2)}")
+            
+            #quantity_free_market = max(solve(Eq(parse_expr(self.supply), parse_expr(self.demand)), x))
+            #equation_function = self.create_equation_function(self.demand)
+            #if "x" not in self.supply:
+            #    price_free_market = float(self.supply)
+            #elif "x" not in self.demand:
+            #    price_free_market = float(self.demand)
+            #else:
+            #   price_free_market = equation_function(quantity)
+
+            mc_values = [mc[str(x)] if str(x) in mc else mc[round(x)] for x in x_range]  # Ensure mc values are aligned with x_range
+            mc_array = np.array(mc_values, dtype=float)
+            condition = mc_array  <= list(price_curve)
+            producer_surplus_plot = plt.fill_between(x_range, mc_array, price_curve, where = condition, color = "silver", alpha=0.9) # producer surplus
+
+            
+            demand_array = np.array(list(demand_dict.values())[0:len(price_curve)], dtype=float)
+            print(demand_array)
+            condition = demand_array >= list(price_curve)
+            consumer_surplus_plot = plt.fill_between(x_range, demand_array, price_curve, where = condition, color = "purple", alpha=0.9) # consumer surplus
+
+
+
             
         plt.plot(mc.keys(),mc.values(), label = "Marginal Cost") 
-        plt.plot(mr.keys(),mr.values(), label = "Marginal Revenue") 
-
-        plt.plot(supply_dict.keys(), supply_dict.values(), label = "Supply")
-        plt.plot(demand_dict.keys(), demand_dict.values(), label = "Demand")
+        plt.plot(mr_graph.keys(),mr_graph.values(), label = "Marginal Revenue") 
 
         
+        plt.plot(demand_dict.keys(), demand_dict.values(), label = "Demand")
 
         plt.xlabel("Quantity")
         plt.ylabel("Price")
 
         plt.legend() 
         plt.show()
-    
+
+    def get_quantity(self) -> float:
+        x = symbols('x')
         
+        # Create the equation from the supply and demand functions
+        mc = parse_expr(self.supply)
+        revenue_eq = parse_expr(f"({self.demand})*(x)")
+        mr = diff(revenue_eq, x)
+
+
+        
+        # Calculate the equilibrium price and quantity
+        quantity = max(solve(Eq(mc, mr), x))
+        #print(quantity)
+        return quantity
+    
+    def get_price(self) -> float:
+        x = symbols('x')
+        quantity = self.get_quantity()
+        mc = parse_expr(self.supply)
+        revenue_eq = parse_expr(f"({self.demand})*(x)")
+        mr = diff(revenue_eq, x)
+        
+    
+        equation_function = self.create_equation_function(str(self.demand))
+        
+        
+        if "x" not in str(mc):
+            price = float(mc)
+        elif "x" not in str(mr):
+            price = float(mr)
+        else:
+            price = equation_function(quantity)
+             
+        #print(f"price is around {round(price, 3)}")
+        return price
+
+
 if __name__ == "__main__":
     total_cost = "x"
     demand = "10 - x"

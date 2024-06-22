@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from sympy import *
+from sympy import solve, Eq, symbols, parse_expr
 import sympy
 import numpy as np
 import random
@@ -21,7 +21,7 @@ class Free_market:
         
         start = 0
         if "x" in self.demand:
-            end = math.floor(self.get_zero_point(self.demand))#), 4 * math.floor(quantity))
+            end = math.floor(self.get_zero_point(self.demand))
         else:
             end = 1.5 * math.floor(quantity)
         step = 1 
@@ -30,7 +30,7 @@ class Free_market:
         if "x" in self.supply:
             supply_dict = self.get_calculate_values(self.supply, end)
             supply_curve = sorted(list(supply_dict.values()) + [float(price)])
-            supply_curve_domain = sorted(list(supply_dict.keys()) + [float(quantity)]) 
+            #supply_curve_domain = sorted(list(supply_dict.keys()) + [float(quantity)]) 
             supply_dict[quantity] = price
 
 
@@ -50,7 +50,7 @@ class Free_market:
             demand_dict = self.get_calculate_values(self.demand, end)
             demand_dict[quantity] =  price
             demand_curve = list(demand_dict.values()) + [float(price)]
-            demand_curve_domain = sorted(list(demand_dict.keys()) + [float(quantity)]) 
+            #demand_curve_domain = sorted(list(demand_dict.keys()) + [float(quantity)]) 
 
             #demand_curve_plot = plt.plot(demand_dict.keys(),demand_dict.values(), label = "Demand") 
             plt.plot(demand_dict.keys(),demand_dict.values(), label = "Demand") 
@@ -141,18 +141,17 @@ class Free_market:
             #value_pairs[x_val] = result """
             if end <= 1:
                 x_values = sorted([i for i in range(start, end, step)] + [quantity])
-                print(x_values)
+
                 for x_val in x_values:
                     result = float(equation_function(x_val))
                     value_pairs[x_val] = result
                 result = float(equation_function(quantity))
-                print(f"result from rational is {result}")
+
                 value_pairs[x_val] = result
 
 
             else:
                 x_values = sorted([i for i in range(start, end, step)] + [quantity])
-                print(x_values)
                 for x_val in x_values:
                     result = float(equation_function(x_val))
                     value_pairs[x_val] = result
@@ -207,7 +206,7 @@ class Free_market:
     
 
     def get_price(self) -> float:
-        x, y = symbols('x y')
+        x = symbols('x')
         quantity = self.get_quantity()
         
         if "x" in self.demand:
@@ -277,6 +276,9 @@ class Free_market:
         economic_surplus = consumer + producer
         return economic_surplus
     
+
+
+
     
 if __name__ == "__main__":
     
