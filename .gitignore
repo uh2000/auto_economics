@@ -154,3 +154,5 @@ checklink/cookies.txt
 venv*
 index_files
 ~
+
+token*
